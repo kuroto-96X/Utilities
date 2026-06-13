@@ -156,8 +156,25 @@ main[b-p8n4fhnufx] {
     flex-direction: column;
 }
 
-.controls-section[b-7lbtlpdh45] {
+.page-header[b-7lbtlpdh45] {
+    padding: 0.75rem 1rem 0;
     border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.page-title[b-7lbtlpdh45] {
+    font-size: 1.875rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.page-desc[b-7lbtlpdh45] {
+    font-size: 0.85rem;
+    margin: 0.2rem 0 0.5rem;
+}
+
+.controls-section[b-7lbtlpdh45] {
     padding-top: 1rem;
 }
 
@@ -180,9 +197,26 @@ main[b-p8n4fhnufx] {
     margin-top: 0.25rem;
 }
 
-.avg-label[b-7lbtlpdh45] {
-    padding-bottom: 0.5rem;
-    min-height: 1.5rem;
+.avg-label-section[b-7lbtlpdh45] {
+    padding: 0.4rem 1rem 0;
+    min-height: 1.4rem;
+}
+
+.slider-wrapper[b-7lbtlpdh45] {
+    display: flex;
+    gap: 4px;
+    padding: 0.25rem 1rem 0;
+}
+
+.slider-spacer[b-7lbtlpdh45] {
+    min-width: 2rem;
+    flex-shrink: 0;
+}
+
+.slider-inner[b-7lbtlpdh45] {
+    flex: 1;
+    min-width: 0;
+    padding-left: 0.5rem;
 }
 
 .tap-section[b-7lbtlpdh45] {
@@ -206,15 +240,22 @@ main[b-p8n4fhnufx] {
     user-select: none;
     -webkit-user-select: none;
     box-shadow: 0 4px 20px rgba(13, 110, 253, 0.35);
-    transition: transform 0.06s ease, box-shadow 0.06s ease;
     position: relative;
-    overflow: hidden;
 }
 
-/* iOS Safari 対応: :active の代わりに Blazor Pointer Events で管理 */
-.tap-button.pressed[b-7lbtlpdh45] {
-    transform: scale(0.94);
-    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
+.tap-text[b-7lbtlpdh45] {
+    position: relative;
+    z-index: 1;
+}
+
+.tap-button.tap-anim[b-7lbtlpdh45] {
+    animation: tap-bounce-b-7lbtlpdh45 0.23s ease-out;
+}
+
+@keyframes tap-bounce-b-7lbtlpdh45 {
+    0%   { transform: scale(1); }
+    20%  { transform: scale(0.76); }
+    100% { transform: scale(1); }
 }
 
 .ripple[b-7lbtlpdh45] {
@@ -224,20 +265,21 @@ main[b-p8n4fhnufx] {
     height: 100%;
     top: 0;
     left: 0;
-    background: rgba(255, 255, 255, 0.35);
-    transform: scale(0);
+    background: rgba(13, 110, 253, 0.45);
+    transform: scale(1);
+    transform-origin: center;
+    opacity: 0;
     pointer-events: none;
+    z-index: 0;
 }
 
 .ripple.active[b-7lbtlpdh45] {
-    animation: ripple-expand-b-7lbtlpdh45 0.6s ease-out forwards;
+    animation: ripple-expand-b-7lbtlpdh45 0.184s ease-out 46ms forwards;
 }
 
 @keyframes ripple-expand-b-7lbtlpdh45 {
-    to {
-        transform: scale(2.5);
-        opacity: 0;
-    }
+    from { transform: scale(1); opacity: 1; }
+    to   { transform: scale(1.5); opacity: 0; }
 }
 
 .reset-section[b-7lbtlpdh45] {
@@ -263,6 +305,45 @@ main[b-p8n4fhnufx] {
 .reset-button.pressed[b-7lbtlpdh45] {
     background: #6c757d;
     color: #fff;
+}
+
+.chart-section[b-7lbtlpdh45] {
+    padding: 0.5rem 1rem 0;
+}
+
+.chart-wrapper[b-7lbtlpdh45] {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+}
+
+.chart-y-labels[b-7lbtlpdh45] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.65rem;
+    line-height: 1;
+    color: #6c757d;
+    text-align: right;
+    min-width: 2rem;
+}
+
+.chart-main-label[b-7lbtlpdh45] {
+    position: absolute;
+    right: 0;
+    transform: translateY(-50%);
+    color: #dc3545;
+    font-size: 0.65rem;
+    line-height: 1;
+}
+
+.bpm-chart[b-7lbtlpdh45] {
+    flex: 1;
+    height: 80px;
+    display: block;
+    min-width: 0;
 }
 
 .history-section[b-7lbtlpdh45] {
