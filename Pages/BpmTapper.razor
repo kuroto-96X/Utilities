@@ -10,13 +10,6 @@
             <div class="bpm-value">@(mainBpm.HasValue ? ((int)Math.Round(mainBpm.Value)).ToString() : "---")</div>
             <div class="bpm-label">BPM</div>
         </div>
-        <div class="slider-area px-3 pb-1">
-            <input type="range" class="form-range"
-                   min="0" max="100" step="1"
-                   disabled="@(tapHistory.Count == 0)"
-                   @bind="sliderValue" @bind:event="oninput" />
-            <div class="avg-label text-center text-muted small">@avgTapLabel</div>
-        </div>
     </div>
 
     <div class="tap-section">
@@ -37,6 +30,14 @@
                 @onpointerup="() => isResetPressed = false"
                 @onpointerleave="() => isResetPressed = false"
                 @onpointercancel="() => isResetPressed = false">Reset</button>
+    </div>
+
+    <div class="slider-area px-3 pb-1">
+        <input type="range" class="form-range"
+               min="0" max="100" step="1"
+               disabled="@(tapHistory.Count == 0)"
+               @bind="sliderValue" @bind:event="oninput" />
+        <div class="avg-label text-center text-muted small">@avgTapLabel</div>
     </div>
 
     @{
@@ -67,7 +68,7 @@
                 return $"{x:F1},{y:F1}";
             }).ToList();
 
-            int n = Math.Max(1, (int)Math.Floor(bpmPoints.Count * sliderValue / 100.0));
+            int n = Math.Max(1, (int)Math.Floor(bpmPoints.Count * effectiveSliderValue / 100.0));
             int splitIndex = bpmPoints.Count - n;
 
             if (splitIndex > 0)
@@ -135,7 +136,7 @@
                     <tbody>
                         @{
                             int intervalCount = tapHistory.Count - 1;
-                            int n = intervalCount > 0 ? Math.Max(1, (int)Math.Floor(intervalCount * sliderValue / 100.0)) : 0;
+                            int n = intervalCount > 0 ? Math.Max(1, (int)Math.Floor(intervalCount * effectiveSliderValue / 100.0)) : 0;
                             bool showDivider = intervalCount > 0 && n < intervalCount;
                             int dividerBeforeIndex = tapHistory.Count - n - 1;
                         }
@@ -168,7 +169,8 @@
     }
 
     private List<TapRecord> tapHistory = new();
-    private int sliderValue = 100;
+    private int sliderValue = 0;
+    private int effectiveSliderValue => 100 - sliderValue;
     private bool isRippling = false;
     private bool isPressed = false;
     private bool isResetPressed = false;
@@ -182,7 +184,7 @@
             int intervalCount = tapHistory.Count - 1;
             if (tapHistory.Count == 0) return "Tap the button to start";
             if (intervalCount <= 0) return "Tap again to measure BPM";
-            int n = Math.Max(1, (int)Math.Floor(intervalCount * sliderValue / 100.0));
+            int n = Math.Max(1, (int)Math.Floor(intervalCount * effectiveSliderValue / 100.0));
             return n == 1 ? "Instant BPM (1 tap)" : $"Averaging last {n} taps";
         }
     }
@@ -198,7 +200,7 @@
                 .Select(t => t.IntervalMs!.Value)
                 .ToList();
 
-            int n = Math.Max(1, (int)Math.Floor(intervals.Count * sliderValue / 100.0));
+            int n = Math.Max(1, (int)Math.Floor(intervals.Count * effectiveSliderValue / 100.0));
             var recent = intervals.TakeLast(n).ToList();
             return 60000.0 / recent.Average();
         }

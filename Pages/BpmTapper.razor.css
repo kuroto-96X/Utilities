@@ -27,8 +27,12 @@
     margin-top: 0.25rem;
 }
 
+.slider-area {
+    padding-top: 0.5rem;
+}
+
 .avg-label {
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
     min-height: 1.5rem;
 }
 
