@@ -1,4 +1,4 @@
-# BPMタッパー + サイト共通フッター 設計
+# Tap BPM + サイト共通フッター 設計
 
 **日付**: 2026-06-13  
 **対象**: Blazor WASM (.NET 10) — 96xtools.dev
@@ -7,7 +7,7 @@
 
 ## 概要
 
-タップ間隔からBPMを計測するページ（`/bpm-tapper`）と、作者情報を表示するサイト共通フッターの2機能を追加する。
+タップ間隔からBPMを計測するページ「Tap BPM」（`/bpm-tapper`）と、作者情報を表示するサイト共通フッターの2機能を追加する。
 
 ---
 
@@ -15,13 +15,13 @@
 
 | 機能 | ファイル |
 |---|---|
-| BPMタッパーページ | `Pages/BpmTapper.razor`（新規） |
+| Tap BPM ページ | `Pages/BpmTapper.razor`（新規） |
 | ナビゲーションリンク追加 | `Layout/NavMenu.razor`（変更） |
 | サイト共通フッター | `Layout/MainLayout.razor`（変更） |
 
 ---
 
-## BPMタッパーページ
+## Tap BPM ページ
 
 ### ルート
 
@@ -128,5 +128,6 @@
 
 1. `dotnet build` がエラーなく通る
 2. `dotnet run` でローカル動作確認（タップ → BPM表示、スライダー、リセット、フッター表示）
+3. ページタイトルが「Tap BPM」で表示されること
 3. `feature/bpm-tapper` ブランチにコミット・プッシュ
 4. `master` マージ後、GitHub Actions が緑 → `https://96xtools.dev/bpm-tapper` で確認
