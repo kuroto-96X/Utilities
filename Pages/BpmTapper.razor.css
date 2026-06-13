@@ -27,11 +27,16 @@
     margin-top: 0.25rem;
 }
 
+.avg-label {
+    padding-bottom: 0.5rem;
+    min-height: 1.5rem;
+}
+
 .tap-section {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 2rem 1rem 1rem;
 }
 
 .tap-button {
@@ -49,14 +54,76 @@
     -webkit-user-select: none;
     box-shadow: 0 4px 20px rgba(13, 110, 253, 0.35);
     transition: transform 0.06s ease, box-shadow 0.06s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.tap-button:active {
+/* iOS Safari 対応: :active の代わりに Blazor Pointer Events で管理 */
+.tap-button.pressed {
     transform: scale(0.94);
     box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(0);
+    pointer-events: none;
+}
+
+.ripple.active {
+    animation: ripple-expand 0.6s ease-out forwards;
+}
+
+@keyframes ripple-expand {
+    to {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+.reset-section {
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 1rem 1rem;
+}
+
+.reset-button {
+    width: min(70vw, 260px);
+    height: 3rem;
+    border-radius: 9999px;
+    border: 2px solid #6c757d;
+    background: transparent;
+    color: #6c757d;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background 0.15s, color 0.15s;
+}
+
+.reset-button:active {
+    background: #6c757d;
+    color: #fff;
 }
 
 .history-section {
     max-height: 40vh;
     overflow-y: auto;
+}
+
+.range-divider td {
+    padding: 0;
+    height: 2px;
+    background-color: #0d6efd;
+    opacity: 0.5;
+}
+
+.out-of-range {
+    opacity: 0.35;
 }
