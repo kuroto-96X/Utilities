@@ -27,8 +27,20 @@
     margin-top: 0.25rem;
 }
 
-.slider-area {
-    padding-top: 0.5rem;
+.slider-wrapper {
+    display: flex;
+    gap: 4px;
+    padding: 0.5rem 1rem 0;
+}
+
+.slider-spacer {
+    min-width: 2rem;
+    flex-shrink: 0;
+}
+
+.slider-inner {
+    flex: 1;
+    min-width: 0;
 }
 
 .avg-label {
@@ -57,7 +69,6 @@
     user-select: none;
     -webkit-user-select: none;
     box-shadow: 0 4px 20px rgba(13, 110, 253, 0.35);
-    transition: transform 0.06s ease, box-shadow 0.06s ease;
     position: relative;
 }
 
@@ -66,10 +77,16 @@
     z-index: 1;
 }
 
-/* iOS Safari 対応: :active の代わりに Blazor Pointer Events で管理 */
-.tap-button.pressed {
-    transform: scale(0.76);
-    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
+.tap-button.tap-anim {
+    animation: tap-bounce 0.35s ease-out;
+}
+
+@keyframes tap-bounce {
+    0%   { transform: scale(1); }
+    20%  { transform: scale(0.76); }
+    55%  { transform: scale(1.1); }
+    80%  { transform: scale(0.97); }
+    100% { transform: scale(1); }
 }
 
 .ripple {

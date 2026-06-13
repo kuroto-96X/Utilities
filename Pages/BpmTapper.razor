@@ -13,11 +13,8 @@
     </div>
 
     <div class="tap-section">
-        <button class="tap-button @(isPressed ? "pressed" : "")"
-                @onpointerdown="OnPointerDown"
-                @onpointerup="() => isPressed = false"
-                @onpointerleave="() => isPressed = false"
-                @onpointercancel="() => isPressed = false">
+        <button @key="tapAnimKey" class="tap-button @(isTapAnimating ? "tap-anim" : "")"
+                @onpointerdown="OnPointerDown">
             <span class="tap-text">TAP</span>
             <span @key="rippleKey" class="ripple @(isRippling ? "active" : "")"></span>
         </button>
@@ -32,12 +29,15 @@
                 @onpointercancel="() => isResetPressed = false">Reset</button>
     </div>
 
-    <div class="slider-area px-3 pb-1">
-        <input type="range" class="form-range"
-               min="0" max="100" step="1"
-               disabled="@(tapHistory.Count == 0)"
-               @bind="sliderValue" @bind:event="oninput" />
-        <div class="avg-label text-center text-muted small">@avgTapLabel</div>
+    <div class="slider-wrapper">
+        <div class="slider-spacer"></div>
+        <div class="slider-inner">
+            <input type="range" class="form-range"
+                   min="0" max="100" step="1"
+                   disabled="@(tapHistory.Count == 0)"
+                   @bind="sliderValue" @bind:event="oninput" />
+            <div class="avg-label text-center text-muted small">@avgTapLabel</div>
+        </div>
     </div>
 
     @{
@@ -172,10 +172,12 @@
     private int sliderValue = 0;
     private int effectiveSliderValue => 100 - sliderValue;
     private bool isRippling = false;
-    private bool isPressed = false;
     private bool isResetPressed = false;
     private int rippleKey = 0;
     private int _currentRippleKey = 0;
+    private int tapAnimKey = 0;
+    private bool isTapAnimating = false;
+    private int _currentTapAnimKey = 0;
 
     private string avgTapLabel
     {
@@ -208,8 +210,18 @@
 
     private async Task OnPointerDown()
     {
-        isPressed = true;
-        await OnTap();
+        tapAnimKey++;
+        _currentTapAnimKey = tapAnimKey;
+        int myKey = tapAnimKey;
+        isTapAnimating = true;
+
+        await Task.WhenAll(OnTap(), Task.Delay(350));
+
+        if (_currentTapAnimKey == myKey)
+        {
+            isTapAnimating = false;
+            StateHasChanged();
+        }
     }
 
     private async Task OnTap()
