@@ -18,7 +18,7 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Publish
-        run: dotnet publish -c Release -o publish
+        run: dotnet publish -c Release -o publish -p:BlazorEnableCompression=false
 
       - name: Add SPA redirect rule
         run: echo "/* /index.html 200" > publish/wwwroot/_redirects
