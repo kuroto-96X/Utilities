@@ -55,7 +55,11 @@
     box-shadow: 0 4px 20px rgba(13, 110, 253, 0.35);
     transition: transform 0.06s ease, box-shadow 0.06s ease;
     position: relative;
-    overflow: hidden;
+}
+
+.tap-text {
+    position: relative;
+    z-index: 1;
 }
 
 /* iOS Safari 対応: :active の代わりに Blazor Pointer Events で管理 */
@@ -71,18 +75,20 @@
     height: 100%;
     top: 0;
     left: 0;
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(13, 110, 253, 0.45);
     transform: scale(0);
+    transform-origin: center 65%;
     pointer-events: none;
+    z-index: 0;
 }
 
 .ripple.active {
-    animation: ripple-expand 0.6s ease-out forwards;
+    animation: ripple-expand 0.3s ease-out forwards;
 }
 
 @keyframes ripple-expand {
     to {
-        transform: scale(2.5);
+        transform: scale(1.7);
         opacity: 0;
     }
 }

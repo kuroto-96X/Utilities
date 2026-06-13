@@ -13,6 +13,7 @@
         <div class="slider-area px-3 pb-1">
             <input type="range" class="form-range"
                    min="0" max="100" step="1"
+                   disabled="@(tapHistory.Count == 0)"
                    @bind="sliderValue" @bind:event="oninput" />
             <div class="avg-label text-center text-muted small">@avgTapLabel</div>
         </div>
@@ -25,8 +26,8 @@
                 @onpointerup="() => isPressed = false"
                 @onpointerleave="() => isPressed = false"
                 @onpointercancel="() => isPressed = false">
-            TAP
-            <span class="ripple @(isRippling ? "active" : "")"></span>
+            <span class="tap-text">TAP</span>
+            <span @key="rippleKey" class="ripple @(isRippling ? "active" : "")"></span>
         </button>
     </div>
 
@@ -42,7 +43,6 @@
     <div class="history-section">
         @if (tapHistory.Count == 0)
         {
-            <p class="text-center text-muted py-3">Tap the button to start</p>
         }
         else
         {
@@ -96,15 +96,18 @@
     private bool isRippling = false;
     private bool isPressed = false;
     private bool isResetPressed = false;
+    private int rippleKey = 0;
+    private int _currentRippleKey = 0;
 
     private string avgTapLabel
     {
         get
         {
             int intervalCount = tapHistory.Count - 1;
-            if (intervalCount <= 0) return "（タップすると BPM を計測します）";
+            if (tapHistory.Count == 0) return "Tap the button to start";
+            if (intervalCount <= 0) return "Tap again to measure BPM";
             int n = Math.Max(1, (int)Math.Floor(intervalCount * sliderValue / 100.0));
-            return n == 1 ? "直近 1 タップ（瞬間 BPM）" : $"直近 {n} タップを平均";
+            return n == 1 ? "Instant BPM (1 tap)" : $"Averaging last {n} taps";
         }
     }
 
@@ -139,11 +142,14 @@
 
         tapHistory.Add(new TapRecord(tapHistory.Count + 1, now, interval, instantBpm));
 
-        if (!isRippling)
+        rippleKey++;
+        _currentRippleKey = rippleKey;
+        int myKey = rippleKey;
+        isRippling = true;
+        StateHasChanged();
+        await Task.Delay(300);
+        if (_currentRippleKey == myKey)
         {
-            isRippling = true;
-            StateHasChanged();
-            await Task.Delay(600);
             isRippling = false;
             StateHasChanged();
         }
