@@ -21,6 +21,7 @@
         <button @key="tapAnimKey" class="tap-button @(isTapAnimating ? "tap-anim" : "")"
                 @onpointerdown="OnPointerDown">
             <span class="tap-text">TAP</span>
+            <span @key="rippleKey" class="ripple @(isRippling ? "active" : "")"></span>
         </button>
     </div>
 
@@ -180,6 +181,9 @@
     private int tapAnimKey = 0;
     private bool isTapAnimating = false;
     private int _currentTapAnimKey = 0;
+    private bool isRippling = false;
+    private int rippleKey = 0;
+    private int _currentRippleKey = 0;
 
     private string avgTapLabel
     {
@@ -214,15 +218,21 @@
     {
         tapAnimKey++;
         _currentTapAnimKey = tapAnimKey;
-        int myKey = tapAnimKey;
+        int myTapKey = tapAnimKey;
         isTapAnimating = true;
+
+        rippleKey++;
+        _currentRippleKey = rippleKey;
+        int myRippleKey = rippleKey;
+        isRippling = true;
+
         OnTap();
-        await Task.Delay(175);
-        if (_currentTapAnimKey == myKey)
-        {
-            isTapAnimating = false;
-            StateHasChanged();
-        }
+
+        await Task.Delay(230);
+        if (_currentTapAnimKey == myTapKey) { isTapAnimating = false; StateHasChanged(); }
+
+        await Task.Delay(70);
+        if (_currentRippleKey == myRippleKey) { isRippling = false; StateHasChanged(); }
     }
 
     private void OnTap()
