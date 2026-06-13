@@ -64,7 +64,7 @@
 
 /* iOS Safari 対応: :active の代わりに Blazor Pointer Events で管理 */
 .tap-button.pressed {
-    transform: scale(0.94);
+    transform: scale(0.88);
     box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
 }
 
@@ -93,7 +93,7 @@
         opacity: 1;
     }
     to {
-        transform: scale(1.25);
+        transform: scale(1.5);
         opacity: 0;
     }
 }
@@ -127,10 +127,29 @@
     padding: 0.5rem 1rem 0;
 }
 
+.chart-wrapper {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+}
+
+.chart-y-labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.65rem;
+    line-height: 1;
+    color: #6c757d;
+    text-align: right;
+    min-width: 2rem;
+}
+
 .bpm-chart {
-    width: 100%;
+    flex: 1;
     height: 80px;
     display: block;
+    min-width: 0;
 }
 
 .history-section {

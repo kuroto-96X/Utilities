@@ -40,16 +40,57 @@
     </div>
 
     @{
-        var chartPoints = GetChartPoints();
+        var bpmPoints = tapHistory.Where(t => t.InstantBpm.HasValue).Select(t => t.InstantBpm!.Value).ToList();
+        string chartPolyline = "";
+        string mainBpmPath = "";
+        int chartMinInt = 0, chartMaxInt = 0;
+
+        if (bpmPoints.Count >= 2)
+        {
+            double minB = bpmPoints.Min();
+            double maxB = bpmPoints.Max();
+            double bpmRange = Math.Max(maxB - minB, 10);
+            double yMin = minB - bpmRange * 0.15;
+            double yMax = maxB + bpmRange * 0.15;
+            chartMinInt = (int)Math.Round(minB);
+            chartMaxInt = (int)Math.Round(maxB);
+
+            int svgW = 400, svgH = 80, padX = 8, padY = 8;
+            double xStep = (double)(svgW - padX * 2) / (bpmPoints.Count - 1);
+
+            chartPolyline = string.Join(" ", bpmPoints.Select((bpm, i) =>
+            {
+                double x = padX + i * xStep;
+                double y = svgH - padY - (bpm - yMin) / (yMax - yMin) * (svgH - padY * 2);
+                return $"{x:F1},{y:F1}";
+            }));
+
+            if (mainBpm.HasValue)
+            {
+                double my = svgH - padY - (mainBpm.Value - yMin) / (yMax - yMin) * (svgH - padY * 2);
+                my = Math.Clamp(my, padY, svgH - padY);
+                mainBpmPath = $"M{padX} {my:F1} L{svgW - padX} {my:F1}";
+            }
+        }
     }
-    @if (!string.IsNullOrEmpty(chartPoints))
+    @if (chartPolyline != "")
     {
         <div class="chart-section">
-            <svg viewBox="0 0 400 80" preserveAspectRatio="none" class="bpm-chart">
-                <polyline points="@chartPoints"
-                          fill="none" stroke="#0d6efd" stroke-width="2.5"
-                          stroke-linejoin="round" stroke-linecap="round" />
-            </svg>
+            <div class="chart-wrapper">
+                <div class="chart-y-labels">
+                    <span>@chartMaxInt</span>
+                    <span>@chartMinInt</span>
+                </div>
+                <svg viewBox="0 0 400 80" preserveAspectRatio="none" class="bpm-chart">
+                    @if (mainBpmPath != "")
+                    {
+                        <path d="@mainBpmPath" stroke="#dc3545" stroke-width="1.5" stroke-dasharray="4 3" fill="none" />
+                    }
+                    <polyline points="@chartPolyline"
+                              fill="none" stroke="#0d6efd" stroke-width="2.5"
+                              stroke-linejoin="round" stroke-linecap="round" />
+                </svg>
+            </div>
         </div>
     }
 
@@ -172,31 +213,6 @@
             isRippling = false;
             StateHasChanged();
         }
-    }
-
-    private string GetChartPoints()
-    {
-        var bpmPoints = tapHistory
-            .Where(t => t.InstantBpm.HasValue)
-            .Select(t => t.InstantBpm!.Value)
-            .ToList();
-        if (bpmPoints.Count < 2) return "";
-
-        double minBpm = bpmPoints.Min();
-        double maxBpm = bpmPoints.Max();
-        double range = Math.Max(maxBpm - minBpm, 10);
-        double yMin = minBpm - range * 0.15;
-        double yMax = maxBpm + range * 0.15;
-
-        const int svgW = 400, svgH = 80, padX = 8, padY = 8;
-        double xStep = (double)(svgW - padX * 2) / (bpmPoints.Count - 1);
-
-        return string.Join(" ", bpmPoints.Select((bpm, i) =>
-        {
-            double x = padX + i * xStep;
-            double y = svgH - padY - (bpm - yMin) / (yMax - yMin) * (svgH - padY * 2);
-            return $"{x:F1},{y:F1}";
-        }));
     }
 
     private void OnReset() => tapHistory.Clear();
