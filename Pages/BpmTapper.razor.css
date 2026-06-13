@@ -64,7 +64,7 @@
 
 /* iOS Safari 対応: :active の代わりに Blazor Pointer Events で管理 */
 .tap-button.pressed {
-    transform: scale(0.88);
+    transform: scale(0.76);
     box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
 }
 

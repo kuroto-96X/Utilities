@@ -41,7 +41,8 @@
 
     @{
         var bpmPoints = tapHistory.Where(t => t.InstantBpm.HasValue).Select(t => t.InstantBpm!.Value).ToList();
-        string chartPolyline = "";
+        string inPolyline = "";
+        string outPolyline = "";
         string mainBpmPath = "";
         int chartMinInt = 0, chartMaxInt = 0;
 
@@ -58,12 +59,19 @@
             int svgW = 400, svgH = 80, padX = 8, padY = 8;
             double xStep = (double)(svgW - padX * 2) / (bpmPoints.Count - 1);
 
-            chartPolyline = string.Join(" ", bpmPoints.Select((bpm, i) =>
+            var allPts = bpmPoints.Select((bpm, i) =>
             {
                 double x = padX + i * xStep;
                 double y = svgH - padY - (bpm - yMin) / (yMax - yMin) * (svgH - padY * 2);
                 return $"{x:F1},{y:F1}";
-            }));
+            }).ToList();
+
+            int n = Math.Max(1, (int)Math.Floor(bpmPoints.Count * sliderValue / 100.0));
+            int splitIndex = bpmPoints.Count - n;
+
+            if (splitIndex > 0)
+                outPolyline = string.Join(" ", allPts.Take(splitIndex + 1));
+            inPolyline = string.Join(" ", allPts.Skip(splitIndex));
 
             if (mainBpm.HasValue)
             {
@@ -73,7 +81,7 @@
             }
         }
     }
-    @if (chartPolyline != "")
+    @if (inPolyline != "")
     {
         <div class="chart-section">
             <div class="chart-wrapper">
@@ -86,7 +94,13 @@
                     {
                         <path d="@mainBpmPath" stroke="#dc3545" stroke-width="1.5" stroke-dasharray="4 3" fill="none" />
                     }
-                    <polyline points="@chartPolyline"
+                    @if (outPolyline != "")
+                    {
+                        <polyline points="@outPolyline"
+                                  fill="none" stroke="#adb5bd" stroke-width="1.5"
+                                  stroke-linejoin="round" stroke-linecap="round" />
+                    }
+                    <polyline points="@inPolyline"
                               fill="none" stroke="#0d6efd" stroke-width="2.5"
                               stroke-linejoin="round" stroke-linecap="round" />
                 </svg>
