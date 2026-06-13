@@ -229,10 +229,9 @@
         OnTap();
 
         await Task.Delay(230);
-        if (_currentTapAnimKey == myTapKey) { isTapAnimating = false; StateHasChanged(); }
-
-        await Task.Delay(70);
-        if (_currentRippleKey == myRippleKey) { isRippling = false; StateHasChanged(); }
+        if (_currentTapAnimKey == myTapKey) isTapAnimating = false;
+        if (_currentRippleKey == myRippleKey) isRippling = false;
+        StateHasChanged();
     }
 
     private void OnTap()

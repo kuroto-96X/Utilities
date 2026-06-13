@@ -102,8 +102,6 @@
 @keyframes tap-bounce {
     0%   { transform: scale(1); }
     20%  { transform: scale(0.76); }
-    55%  { transform: scale(1.1); }
-    80%  { transform: scale(0.97); }
     100% { transform: scale(1); }
 }
 
@@ -123,7 +121,7 @@
 }
 
 .ripple.active {
-    animation: ripple-expand 0.3s ease-out forwards;
+    animation: ripple-expand 0.184s ease-out 46ms forwards;
 }
 
 @keyframes ripple-expand {
