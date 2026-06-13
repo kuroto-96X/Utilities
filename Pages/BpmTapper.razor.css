@@ -134,6 +134,7 @@
 }
 
 .chart-y-labels {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -143,6 +144,15 @@
     color: #6c757d;
     text-align: right;
     min-width: 2rem;
+}
+
+.chart-main-label {
+    position: absolute;
+    right: 0;
+    transform: translateY(-50%);
+    color: #dc3545;
+    font-size: 0.65rem;
+    line-height: 1;
 }
 
 .bpm-chart {

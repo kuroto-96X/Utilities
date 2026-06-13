@@ -45,6 +45,7 @@
         string outPolyline = "";
         string mainBpmPath = "";
         int chartMinInt = 0, chartMaxInt = 0;
+        double mainBpmLabelTopPx = -1;
 
         if (bpmPoints.Count >= 2)
         {
@@ -78,6 +79,7 @@
                 double my = svgH - padY - (mainBpm.Value - yMin) / (yMax - yMin) * (svgH - padY * 2);
                 my = Math.Clamp(my, padY, svgH - padY);
                 mainBpmPath = $"M{padX} {my:F1} L{svgW - padX} {my:F1}";
+                mainBpmLabelTopPx = my;
             }
         }
     }
@@ -87,6 +89,12 @@
             <div class="chart-wrapper">
                 <div class="chart-y-labels">
                     <span>@chartMaxInt</span>
+                    @if (mainBpmLabelTopPx >= 0)
+                    {
+                        <span class="chart-main-label" style="top: @(mainBpmLabelTopPx.ToString("F1"))px">
+                            @((int)Math.Round(mainBpm!.Value))
+                        </span>
+                    }
                     <span>@chartMinInt</span>
                 </div>
                 <svg viewBox="0 0 400 80" preserveAspectRatio="none" class="bpm-chart">
