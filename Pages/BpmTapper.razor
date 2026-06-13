@@ -10,18 +10,27 @@
             <div class="bpm-value">@(mainBpm.HasValue ? ((int)Math.Round(mainBpm.Value)).ToString() : "---")</div>
             <div class="bpm-label">BPM</div>
         </div>
-        <div class="slider-area d-flex align-items-center gap-2 px-3 pb-2">
-            <span class="text-nowrap small text-muted">平均範囲</span>
-            <input type="range" class="form-range flex-grow-1"
+        <div class="slider-area px-3 pb-1">
+            <input type="range" class="form-range"
                    min="0" max="100" step="1"
                    @bind="sliderValue" @bind:event="oninput" />
-            <span class="text-nowrap small">@sliderValue%</span>
-            <button class="btn btn-outline-secondary btn-sm" @onclick="OnReset">Reset</button>
+            <div class="avg-label text-center text-muted small">@avgTapLabel</div>
         </div>
     </div>
 
     <div class="tap-section">
-        <button class="tap-button" @onclick="OnTap">TAP</button>
+        <button class="tap-button @(isPressed ? "pressed" : "")"
+                @onclick="OnTap"
+                @onpointerdown="() => isPressed = true"
+                @onpointerup="() => isPressed = false"
+                @onpointerleave="() => isPressed = false">
+            TAP
+            <span class="ripple @(isRippling ? "active" : "")"></span>
+        </button>
+    </div>
+
+    <div class="reset-section">
+        <button class="reset-button" @onclick="OnReset">Reset</button>
     </div>
 
     <div class="history-section">
@@ -42,10 +51,21 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @{
+                            int intervalCount = tapHistory.Count - 1;
+                            int n = intervalCount > 0 ? Math.Max(1, (int)Math.Floor(intervalCount * sliderValue / 100.0)) : 0;
+                            bool showDivider = intervalCount > 0 && n < intervalCount;
+                            int dividerBeforeIndex = tapHistory.Count - n - 1;
+                        }
                         @for (int i = tapHistory.Count - 1; i >= 0; i--)
                         {
+                            if (showDivider && i == dividerBeforeIndex)
+                            {
+                                <tr class="range-divider"><td colspan="4"></td></tr>
+                            }
                             var tap = tapHistory[i];
-                            <tr>
+                            bool outOfRange = showDivider && i <= dividerBeforeIndex;
+                            <tr class="@(outOfRange ? "out-of-range" : "")">
                                 <td>@tap.Index</td>
                                 <td>@tap.TimeDisplay</td>
                                 <td>@(tap.IntervalMs.HasValue ? ((int)tap.IntervalMs.Value).ToString() : "-")</td>
@@ -67,6 +87,19 @@
 
     private List<TapRecord> tapHistory = new();
     private int sliderValue = 100;
+    private bool isRippling = false;
+    private bool isPressed = false;
+
+    private string avgTapLabel
+    {
+        get
+        {
+            int intervalCount = tapHistory.Count - 1;
+            if (intervalCount <= 0) return "（タップすると BPM を計測します）";
+            int n = Math.Max(1, (int)Math.Floor(intervalCount * sliderValue / 100.0));
+            return n == 1 ? "直近 1 タップ（瞬間 BPM）" : $"直近 {n} タップを平均";
+        }
+    }
 
     private double? mainBpm
     {
@@ -85,7 +118,7 @@
         }
     }
 
-    private void OnTap()
+    private async Task OnTap()
     {
         var now = DateTime.Now;
         double? interval = null;
@@ -98,6 +131,11 @@
         }
 
         tapHistory.Add(new TapRecord(tapHistory.Count + 1, now, interval, instantBpm));
+
+        isRippling = true;
+        StateHasChanged();
+        await Task.Delay(600);
+        isRippling = false;
     }
 
     private void OnReset() => tapHistory.Clear();
