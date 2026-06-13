@@ -23,7 +23,8 @@
                 @onclick="OnTap"
                 @onpointerdown="() => isPressed = true"
                 @onpointerup="() => isPressed = false"
-                @onpointerleave="() => isPressed = false">
+                @onpointerleave="() => isPressed = false"
+                @onpointercancel="() => isPressed = false">
             TAP
             <span class="ripple @(isRippling ? "active" : "")"></span>
         </button>
@@ -132,10 +133,14 @@
 
         tapHistory.Add(new TapRecord(tapHistory.Count + 1, now, interval, instantBpm));
 
-        isRippling = true;
-        StateHasChanged();
-        await Task.Delay(600);
-        isRippling = false;
+        if (!isRippling)
+        {
+            isRippling = true;
+            StateHasChanged();
+            await Task.Delay(600);
+            isRippling = false;
+            StateHasChanged();
+        }
     }
 
     private void OnReset() => tapHistory.Clear();
