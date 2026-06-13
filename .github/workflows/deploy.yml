@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   deploy:
@@ -16,6 +16,9 @@ jobs:
 
       - name: Publish
         run: dotnet publish -c Release -o publish
+
+      - name: Add SPA redirect rule
+        run: echo "/* /index.html 200" > publish/wwwroot/_redirects
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
