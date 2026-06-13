@@ -31,7 +31,12 @@
     </div>
 
     <div class="reset-section">
-        <button class="reset-button" @onclick="OnReset">Reset</button>
+        <button class="reset-button @(isResetPressed ? "pressed" : "")"
+                @onclick="OnReset"
+                @onpointerdown="() => isResetPressed = true"
+                @onpointerup="() => isResetPressed = false"
+                @onpointerleave="() => isResetPressed = false"
+                @onpointercancel="() => isResetPressed = false">Reset</button>
     </div>
 
     <div class="history-section">
@@ -90,6 +95,7 @@
     private int sliderValue = 100;
     private bool isRippling = false;
     private bool isPressed = false;
+    private bool isResetPressed = false;
 
     private string avgTapLabel
     {

@@ -107,7 +107,7 @@
     transition: background 0.15s, color 0.15s;
 }
 
-.reset-button:active {
+.reset-button.pressed {
     background: #6c757d;
     color: #fff;
 }
