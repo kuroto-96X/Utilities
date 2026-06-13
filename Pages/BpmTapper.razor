@@ -1,0 +1,104 @@
+@page "/bpm-tapper"
+
+<PageTitle>Tap BPM</PageTitle>
+
+<div class="tap-bpm-page">
+    <!-- AdSense: Tap BPM - ここに広告コードを挿入 -->
+
+    <div class="controls-section">
+        <div class="bpm-display-area text-center">
+            <div class="bpm-value">@(mainBpm.HasValue ? ((int)Math.Round(mainBpm.Value)).ToString() : "---")</div>
+            <div class="bpm-label">BPM</div>
+        </div>
+        <div class="slider-area d-flex align-items-center gap-2 px-3 pb-2">
+            <span class="text-nowrap small text-muted">平均範囲</span>
+            <input type="range" class="form-range flex-grow-1"
+                   min="0" max="100" step="1"
+                   @bind="sliderValue" @bind:event="oninput" />
+            <span class="text-nowrap small">@sliderValue%</span>
+            <button class="btn btn-outline-secondary btn-sm" @onclick="OnReset">Reset</button>
+        </div>
+    </div>
+
+    <div class="tap-section">
+        <button class="tap-button" @onclick="OnTap">TAP</button>
+    </div>
+
+    <div class="history-section">
+        @if (tapHistory.Count == 0)
+        {
+            <p class="text-center text-muted py-3">Tap the button to start</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Time</th>
+                            <th>Interval (ms)</th>
+                            <th>Instant BPM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = tapHistory.Count - 1; i >= 0; i--)
+                        {
+                            var tap = tapHistory[i];
+                            <tr>
+                                <td>@tap.Index</td>
+                                <td>@tap.TimeDisplay</td>
+                                <td>@(tap.IntervalMs.HasValue ? ((int)tap.IntervalMs.Value).ToString() : "-")</td>
+                                <td>@(tap.InstantBpm.HasValue ? ((int)Math.Round(tap.InstantBpm.Value)).ToString() : "-")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private record TapRecord(int Index, DateTime Timestamp, double? IntervalMs, double? InstantBpm)
+    {
+        public string TimeDisplay => Timestamp.ToString("HH:mm:ss.fff");
+    }
+
+    private List<TapRecord> tapHistory = new();
+    private int sliderValue = 100;
+
+    private double? mainBpm
+    {
+        get
+        {
+            if (tapHistory.Count < 2) return null;
+
+            var intervals = tapHistory
+                .Skip(1)
+                .Select(t => t.IntervalMs!.Value)
+                .ToList();
+
+            int n = Math.Max(1, (int)Math.Floor(intervals.Count * sliderValue / 100.0));
+            var recent = intervals.TakeLast(n).ToList();
+            return 60000.0 / recent.Average();
+        }
+    }
+
+    private void OnTap()
+    {
+        var now = DateTime.Now;
+        double? interval = null;
+        double? instantBpm = null;
+
+        if (tapHistory.Count > 0)
+        {
+            interval = (now - tapHistory[^1].Timestamp).TotalMilliseconds;
+            instantBpm = 60000.0 / interval.Value;
+        }
+
+        tapHistory.Add(new TapRecord(tapHistory.Count + 1, now, interval, instantBpm));
+    }
+
+    private void OnReset() => tapHistory.Clear();
+}
