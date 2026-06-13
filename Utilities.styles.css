@@ -10,41 +10,7 @@ main[b-p8n4fhnufx] {
 }
 
 .sidebar[b-p8n4fhnufx] {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-}
-
-.top-row[b-p8n4fhnufx] {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
-}
-
-    .top-row[b-p8n4fhnufx]  a, .top-row[b-p8n4fhnufx]  .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        text-decoration: none;
-    }
-
-    .top-row[b-p8n4fhnufx]  a:hover, .top-row[b-p8n4fhnufx]  .btn-link:hover {
-        text-decoration: underline;
-    }
-
-    .top-row[b-p8n4fhnufx]  a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-@media (max-width: 640.98px) {
-    .top-row[b-p8n4fhnufx] {
-        justify-content: space-between;
-    }
-
-    .top-row[b-p8n4fhnufx]  a, .top-row[b-p8n4fhnufx]  .btn-link {
-        margin-left: 0;
-    }
+    background-image: linear-gradient(180deg, #0ea5e9 0%, #0369a1 100%);
 }
 
 @media (min-width: 641px) {
@@ -59,19 +25,7 @@ main[b-p8n4fhnufx] {
         top: 0;
     }
 
-    .top-row[b-p8n4fhnufx] {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-
-    .top-row.auth[b-p8n4fhnufx]  a:first-child {
-        flex: 1;
-        text-align: right;
-        width: 0;
-    }
-
-    .top-row[b-p8n4fhnufx], article[b-p8n4fhnufx] {
+    article[b-p8n4fhnufx] {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
@@ -115,7 +69,7 @@ main[b-p8n4fhnufx] {
 
 .top-row[b-joi1htrgzt] {
     min-height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.15);
 }
 
 .navbar-brand[b-joi1htrgzt] {
@@ -226,11 +180,16 @@ main[b-p8n4fhnufx] {
     margin-top: 0.25rem;
 }
 
+.avg-label[b-7lbtlpdh45] {
+    padding-bottom: 0.5rem;
+    min-height: 1.5rem;
+}
+
 .tap-section[b-7lbtlpdh45] {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 2rem 1rem 1rem;
 }
 
 .tap-button[b-7lbtlpdh45] {
@@ -248,14 +207,76 @@ main[b-p8n4fhnufx] {
     -webkit-user-select: none;
     box-shadow: 0 4px 20px rgba(13, 110, 253, 0.35);
     transition: transform 0.06s ease, box-shadow 0.06s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.tap-button:active[b-7lbtlpdh45] {
+/* iOS Safari 対応: :active の代わりに Blazor Pointer Events で管理 */
+.tap-button.pressed[b-7lbtlpdh45] {
     transform: scale(0.94);
     box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
+}
+
+.ripple[b-7lbtlpdh45] {
+    position: absolute;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(0);
+    pointer-events: none;
+}
+
+.ripple.active[b-7lbtlpdh45] {
+    animation: ripple-expand-b-7lbtlpdh45 0.6s ease-out forwards;
+}
+
+@keyframes ripple-expand-b-7lbtlpdh45 {
+    to {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+.reset-section[b-7lbtlpdh45] {
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 1rem 1rem;
+}
+
+.reset-button[b-7lbtlpdh45] {
+    width: min(70vw, 260px);
+    height: 3rem;
+    border-radius: 9999px;
+    border: 2px solid #6c757d;
+    background: transparent;
+    color: #6c757d;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background 0.15s, color 0.15s;
+}
+
+.reset-button.pressed[b-7lbtlpdh45] {
+    background: #6c757d;
+    color: #fff;
 }
 
 .history-section[b-7lbtlpdh45] {
     max-height: 40vh;
     overflow-y: auto;
+}
+
+.range-divider td[b-7lbtlpdh45] {
+    padding: 0;
+    height: 2px;
+    background-color: #0d6efd;
+    opacity: 0.5;
+}
+
+.out-of-range[b-7lbtlpdh45] {
+    opacity: 0.35;
 }
