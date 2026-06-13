@@ -20,11 +20,6 @@ jobs:
       - name: Publish
         run: dotnet publish -c Release -o publish -p:BlazorEnableCompression=false
 
-      - name: Debug publish output
-        run: |
-          echo "=== index.html ===" && cat publish/wwwroot/index.html
-          echo "=== _framework files ===" && ls publish/wwwroot/_framework/ | head -20
-
       - name: Add SPA redirect rule
         run: echo "/* /index.html 200" > publish/wwwroot/_redirects
 
