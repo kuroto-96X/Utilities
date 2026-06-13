@@ -75,3 +75,35 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+
+.site-footer {
+    border-top: 1px solid #dee2e6;
+    margin-top: 2rem;
+}
+
+.footer-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.footer-name {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.footer-bio {
+    margin-top: 0.1rem;
+}
+
+.footer-link {
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
+}
